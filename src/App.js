@@ -48,7 +48,7 @@ const App = () => {
             </div>
           </Fragment>
         </Switch>
-        <Footer />
+        {/* <Footer /> */}
       </Router>
     </AuthProvider>
   );
