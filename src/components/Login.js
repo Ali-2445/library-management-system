@@ -3,7 +3,7 @@ import firebase from "../firebaseConfig";
 import M from "materialize-css/dist/js/materialize.min.js";
 import { AuthContext } from "../context/Auth";
 
-const Login = props => {
+const Login = (props) => {
   const { user } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,10 +12,13 @@ const Login = props => {
     if (user) {
       props.history.push("/books");
     }
-  }, [user,props.history]);
+  }, [user, props.history]);
 
-  const login = async e => {
+  const login = async (e) => {
     e.preventDefault();
+    if (!email || !password) {
+      return;
+    }
     try {
       const user = await firebase
         .auth()
@@ -23,7 +26,7 @@ const Login = props => {
       if (user) {
         props.history.push("/books");
       }
-    } catch(error) {
+    } catch (error) {
       M.toast({ html: `${error.message}`, classes: "red rounded" });
     }
   };
@@ -42,7 +45,7 @@ const Login = props => {
                     type="email"
                     className="validate"
                     value={email}
-                    onChange={e => setEmail(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                   <label htmlFor="email">Email</label>
                 </div>
@@ -53,7 +56,7 @@ const Login = props => {
                     type="password"
                     className="validate"
                     value={password}
-                    onChange={e => setPassword(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                   <label htmlFor="password">Password</label>
                 </div>
