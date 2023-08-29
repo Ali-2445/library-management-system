@@ -3,15 +3,13 @@ import firebase from "../firebaseConfig";
 import { Link } from "react-router-dom";
 import spinner from "../images/loadingSpinner.gif";
 import { AuthContext } from "../context/Auth";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
-const Dashboard = (props) => {
+const MarketPlace = (props) => {
   const { user } = useContext(AuthContext);
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTitle, setSearchTitle] = useState("");
   const [searchAuthor, setSearchAuthor] = useState("");
-  const history = useHistory();
 
   useEffect(() => {
     if (!user) {
@@ -42,25 +40,15 @@ const Dashboard = (props) => {
     </div>
   ) : (
     <div className="row">
-      <button
-        className="btn white black-text waves-effect waves-teal"
-        style={{ marginRight: 30 }}
-        onClick={() => {
-          history.push("/orders");
-        }}
-      >
-        See Orders
-      </button>
-
       <div className="col s12 m3 left-panel">
-        <h4>Manage Books</h4>
+        {/* <h4>Manage Books</h4>
         <Link
           to="/add/book"
           className="waves-effect waves-light btn green darken-3 hoverable"
           style={{ margin: "10px 0px" }}
         >
           ADD BOOK <i className="material-icons right">add</i>
-        </Link>
+        </Link> */}
 
         <div className="input-field">
           <input
@@ -103,11 +91,15 @@ const Dashboard = (props) => {
                         style={{ height: "250px" }}
                         alt={book.author}
                       />
+                      <h6>Name : {book.title}</h6>
+                      <h6>Price : {book.price} Rs</h6>
+
+                      <h6>Description : {book.description}</h6>
                     </div>
 
                     <div className="card-action center">
                       <Link
-                        to={`/book/${book.id}`}
+                        to={`/book/${book.id}?fromMarketplace=true`}
                         className="btn grey darken-1 hoverable"
                       >
                         View Details{" "}
@@ -126,4 +118,4 @@ const Dashboard = (props) => {
   );
 };
 
-export default Dashboard;
+export default MarketPlace;

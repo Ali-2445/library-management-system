@@ -4,65 +4,14 @@ import M from "materialize-css/dist/js/materialize.min.js";
 import { AuthContext } from "../context/Auth";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
-const Login = (props) => {
+const Signup = (props) => {
   const { user } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const history = useHistory();
 
-  useEffect(() => {
-    console.log("user", user);
-    if (user) {
-      history.push("/books");
-    }
-  }, [user, history]);
-
-  // const login = async (e) => {
-  //   e.preventDefault();
-  //   if (!email || !password) {
-  //     return;
-  //   }
-  //   try {
-  //     const user = await firebase
-  //       .auth()
-  //       .signInWithEmailAndPassword(email, password);
-  //     if (user) {
-  //       history.push("/books");
-  //     }
-  //   } catch (error) {
-  //     M.toast({ html: `${error.message}`, classes: "red rounded" });
-  //   }
-  // };
-
-  // const login = async (e) => {
-  //   e.preventDefault();
-  //   if (!email || !password) {
-  //     return;
-  //   }
-  //   try {
-  //     const userCredential = await firebase
-  //       .auth()
-  //       .signInWithEmailAndPassword(email, password);
-  //     if (userCredential.user) {
-  //       // Check if the user has isUser set to true in Firestore
-  //       const userDoc = await firebase
-  //         .firestore()
-  //         .collection("users")
-  //         .doc(userCredential.user.uid)
-  //         .get();
-
-  //       if (userDoc.exists && userDoc.data().isUser === true) {
-  //         history.push("/marketplace"); // User has isUser set to true
-  //       } else {
-  //         history.push("/books"); // User does not have isUser set to true
-  //       }
-  //     }
-  //   } catch (error) {
-  //     M.toast({ html: `${error.message}`, classes: "red rounded" });
-  //   }
-  // };
-
-  const login = async (e) => {
+  const signup = async (e) => {
     e.preventDefault();
     if (!email || !password) {
       return;
@@ -70,27 +19,24 @@ const Login = (props) => {
     try {
       const userCredential = await firebase
         .auth()
-        .signInWithEmailAndPassword(email, password);
+        .createUserWithEmailAndPassword(email, password);
+
       if (userCredential.user) {
-        // Check if the user has isUser set to true in Firestore
-        const userDocRef = firebase
+        // Create a user object to store in Firestore
+        const newUser = {
+          email: userCredential.user.email,
+          isUser: true,
+          // Add other user-related data if needed
+        };
+
+        // Store user data in Firestore
+        await firebase
           .firestore()
           .collection("users")
-          .doc(userCredential.user.uid);
-        const userDoc = await userDocRef.get();
+          .doc(userCredential.user.uid)
+          .set(newUser);
 
-        if (userDoc.exists) {
-          const userData = userDoc.data();
-          if (userData.isUser == true) {
-            history.push("/marketplace"); // User has isUser set to true
-          } else {
-            history.push("/books"); // User does not have isUser set to true
-          }
-        } else {
-          // Handle the case where the user document doesn't exist
-          console.log("User document does not exist.");
-          // You can choose to display an error message or handle it differently.
-        }
+        history.push("/marketplace");
       }
     } catch (error) {
       M.toast({ html: `${error.message}`, classes: "red rounded" });
@@ -102,8 +48,8 @@ const Login = (props) => {
       <div className="col s12 m6 offset-m3">
         <div className="card hoverable">
           <div className="card-content">
-            <h5 className="center">Login to Dashboard</h5>
-            <form onSubmit={login}>
+            <h5 className="center">Create Account</h5>
+            <form onSubmit={signup}>
               <div className="row">
                 <div className="input-field col s12 m8 offset-m2">
                   <i className="material-icons prefix">email</i>
@@ -127,6 +73,17 @@ const Login = (props) => {
                   />
                   <label htmlFor="password">Password</label>
                 </div>
+                <div className="input-field col s12 m8 offset-m2">
+                  <i className="material-icons prefix">keyboard_hide</i>
+                  <input
+                    id="name"
+                    type="text"
+                    className="validate"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                  <label htmlFor="name">Name</label>
+                </div>
               </div>
               <div className="card-action center">
                 <button
@@ -134,7 +91,7 @@ const Login = (props) => {
                   style={{ margin: "18px" }}
                   type="submit"
                 >
-                  Login
+                  Register
                   <i className="material-icons right">add_circle_outline</i>
                 </button>
                 <button
@@ -159,10 +116,10 @@ const Login = (props) => {
           >
             <p
               className="flow-text"
-              onClick={() => history.push("/signup")}
+              onClick={() => history.push("/")}
               style={{ cursor: "pointer" }}
             >
-              Don't have an account? Signup
+              Already have an account? Login
             </p>
           </div>
         </div>
@@ -171,4 +128,4 @@ const Login = (props) => {
   );
 };
 
-export default Login;
+export default Signup;

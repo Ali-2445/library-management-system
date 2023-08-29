@@ -5,7 +5,7 @@ import M from "materialize-css/dist/js/materialize.min.js";
 import spinner from "../images/loadingSpinner.gif";
 import { AuthContext } from "../context/Auth";
 
-const AddBook = props => {
+const AddBook = (props) => {
   const { user } = useContext(AuthContext);
   const [values, setValues] = useState({
     title: "",
@@ -13,7 +13,8 @@ const AddBook = props => {
     genre: "",
     no_copies: "",
     date_published: "",
-    description: ""
+    description: "",
+    price: "",
   });
   const [image, setImage] = useState("");
   const [imageName, setImageName] = useState("");
@@ -25,16 +26,17 @@ const AddBook = props => {
     genre,
     no_copies,
     date_published,
-    description
+    description,
+    price,
   } = values;
 
   useEffect(() => {
     if (!user) {
       props.history.push("/");
     }
-  }, [user,props.history]);
+  }, [user, props.history]);
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     M.AutoInit();
     if (!image) {
@@ -46,25 +48,22 @@ const AddBook = props => {
       "image/gif",
       "image/jpeg",
       "image/jpg",
-      "image/png"
+      "image/png",
     ];
     if (!validImageTypes.includes(fileType)) {
       alert("Not a valid file. Please choose an image.");
       return;
     }
     setIsLoading(true);
-    const uploadTask = firebase
-      .storage()
-      .ref(`images/${imageName}`)
-      .put(image);
+    const uploadTask = firebase.storage().ref(`images/${imageName}`).put(image);
     uploadTask.on(
       "state_changed",
-      snapshot => {},
-      error => {
+      (snapshot) => {},
+      (error) => {
         console.log(error);
       },
       () => {
-        uploadTask.snapshot.ref.getDownloadURL().then(function(imageURL) {
+        uploadTask.snapshot.ref.getDownloadURL().then(function (imageURL) {
           const newBook = {
             title,
             author,
@@ -72,7 +71,7 @@ const AddBook = props => {
             no_copies,
             date_published,
             description,
-            imageURL
+            imageURL,
           };
           firebase
             .firestore()
@@ -81,7 +80,7 @@ const AddBook = props => {
             .then(() => {
               M.toast({
                 html: "Book added succesfully",
-                classes: "green darken-1 rounded"
+                classes: "green darken-1 rounded",
               });
               setIsLoading(false);
               resetForm();
@@ -90,7 +89,7 @@ const AddBook = props => {
             .catch(() => {
               M.toast({
                 html: "Something went wrong. Please try again.",
-                classes: "red darken-1 rounded"
+                classes: "red darken-1 rounded",
               });
               setIsLoading(false);
             });
@@ -99,13 +98,13 @@ const AddBook = props => {
     );
   };
 
-  const handleChange = name => e => {
+  const handleChange = (name) => (e) => {
     setValues({ ...values, [name]: e.target.value });
   };
-  const uploadImage = e => {
+  const uploadImage = (e) => {
     const imageFile = e.target.files[0];
     setImage(imageFile);
-    if(!imageFile){
+    if (!imageFile) {
       return;
     }
     setImagePreview(URL.createObjectURL(imageFile));
@@ -120,14 +119,14 @@ const AddBook = props => {
       genre: "",
       no_copies: "",
       date_published: "",
-      description: ""
+      description: "",
     });
     setImage("");
   };
 
   return isLoading ? (
     <div className="spinner">
-      <img src={spinner} alt="loading-spinner"/>
+      <img src={spinner} alt="loading-spinner" />
     </div>
   ) : (
     <div className="row">
@@ -172,6 +171,16 @@ const AddBook = props => {
                         value={genre}
                       />
                       <label htmlFor="genre">Genre</label>
+                    </div>
+                    <div className="input-field col s4">
+                      <input
+                        id="price"
+                        type="text"
+                        className="validate"
+                        onChange={handleChange("price")}
+                        value={price}
+                      />
+                      <label htmlFor="genre">Price</label>
                     </div>
                     <div className="input-field col s4">
                       <input

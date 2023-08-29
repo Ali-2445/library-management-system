@@ -11,6 +11,9 @@ import BookDetails from "./components/BookDetails";
 import AddBook from "./components/AddBook";
 import Footer from "./components/Footer";
 import firebase from "firebase";
+import Signup from "./components/Signup";
+import Marketplace from "./components/Marketplace";
+import Orders from "./components/orders";
 
 const App = () => {
   const config = {
@@ -42,7 +45,12 @@ const App = () => {
           <Fragment>
             <div className="content">
               <Route exact path="/" component={Login} />
+              <Route exact path="/signup" component={Signup} />
+              <Route exact path="/marketplace" component={Marketplace} />
+
               <Route exact path="/books" component={Dashboard} />
+              <Route exact path="/orders" component={Orders} />
+
               <Route exact path="/book/:id" component={BookDetails} />
               <Route exact path="/add/book" component={AddBook} />
             </div>
