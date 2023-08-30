@@ -71,7 +71,9 @@ const AddBook = (props) => {
             no_copies,
             date_published,
             description,
+
             imageURL,
+            price,
           };
           firebase
             .firestore()
@@ -120,6 +122,7 @@ const AddBook = (props) => {
       no_copies: "",
       date_published: "",
       description: "",
+      price: "",
     });
     setImage("");
   };
@@ -180,7 +183,7 @@ const AddBook = (props) => {
                         onChange={handleChange("price")}
                         value={price}
                       />
-                      <label htmlFor="genre">Price</label>
+                      <label htmlFor="price">Price</label>
                     </div>
                     <div className="input-field col s4">
                       <input
