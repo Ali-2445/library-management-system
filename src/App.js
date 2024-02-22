@@ -15,6 +15,8 @@ import Signup from "./components/Signup";
 import Marketplace from "./components/Marketplace";
 import Orders from "./components/orders";
 
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+
 const App = () => {
   const config = {
     // apiKey: "AIzaSyDEWhmlkC5v7kCs23HowbHDRCl0WsbxBj4",
@@ -32,21 +34,26 @@ const App = () => {
     appId: "1:618333617992:web:6c1ce0941c50eda54bfd7d",
   };
 
+  const theme = createTheme({
+    // Customize theme here
+  });
+
   useEffect(() => {
     if (!firebase.app.length) {
       firebase.initializeApp(config);
     }
   }, []);
   return (
+    <ThemeProvider theme={theme}>
     <AuthProvider>
       <Router>
         <NavBar />
         <Switch>
           <Fragment>
             <div className="content">
-              <Route exact path="/" component={Login} />
+              <Route exact path="/login" component={Login} />
               <Route exact path="/signup" component={Signup} />
-              <Route exact path="/marketplace" component={Marketplace} />
+              <Route exact path="/" component={Marketplace} />
 
               <Route exact path="/books" component={Dashboard} />
               <Route exact path="/orders" component={Orders} />
@@ -59,6 +66,7 @@ const App = () => {
         {/* <Footer /> */}
       </Router>
     </AuthProvider>
+    </ThemeProvider>
   );
 };
 

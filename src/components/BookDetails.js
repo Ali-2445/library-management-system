@@ -20,8 +20,13 @@ const BookDetails = (props) => {
 
   const handleOrder = () => {
     // Open the popup when the button is clicked
+    if (!user) {
+  
+      props.history.push("/login");
+    }else{
+      setPopupVisible(true);
 
-    setPopupVisible(true);
+    }
   };
 
   const closePopup = () => {
@@ -29,9 +34,9 @@ const BookDetails = (props) => {
     setPopupVisible(false);
   };
   useEffect(() => {
-    if (!user) {
-      props.history.push("/");
-    }
+    // if (!user) {
+    //   props.history.push("/");
+    // }
     const unsubscribe = firebase
       .firestore()
       .collection("books")
@@ -65,6 +70,7 @@ const BookDetails = (props) => {
   };
 
   const confirmOrder = async () => {
+  
     if (!phone || !address) {
       alert("Fill all information");
       return;
@@ -112,7 +118,7 @@ const BookDetails = (props) => {
               &times;
             </span>
             {/* Add your popup content here */}
-            <div className="input-field">
+            {/* <div className="input-field">
               <input
                 id="title"
                 type="text"
@@ -121,7 +127,24 @@ const BookDetails = (props) => {
                 onChange={(e) => setPhone(e.target.value)}
               />
               <label htmlFor="title">Phone Number</label>
-            </div>
+            </div> */}
+            <div className="input-field">
+  <input
+    id="title"
+    type="number"
+    className="validate"
+    value={phone}
+    onChange={(e) => setPhone(e.target.value)}
+    onKeyPress={(e) => {
+      // Allow only numbers
+      const isValidChar = /^\d+$/.test(e.key);
+      if (!isValidChar) {
+        e.preventDefault();
+      }
+    }}
+  />
+  <label htmlFor="title">Phone Number</label>
+</div>
             <div className="input-field">
               <input
                 id="address"

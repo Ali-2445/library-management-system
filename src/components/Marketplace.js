@@ -1,8 +1,13 @@
+
+
+
+
 import React, { useState, useEffect, useContext } from "react";
 import firebase from "../firebaseConfig";
 import { Link } from "react-router-dom";
 import spinner from "../images/loadingSpinner.gif";
 import { AuthContext } from "../context/Auth";
+import { TextField, Card, CardContent, CardMedia, Typography, Button, Grid, Box } from '@mui/material';
 
 const MarketPlace = (props) => {
   const { user } = useContext(AuthContext);
@@ -12,9 +17,9 @@ const MarketPlace = (props) => {
   const [searchAuthor, setSearchAuthor] = useState("");
 
   useEffect(() => {
-    if (!user) {
-      props.history.push("/");
-    }
+    // if (!user) {
+    //   props.history.push("/");
+    // }
     setIsLoading(true);
     const unsubscribe = firebase
       .firestore()
@@ -34,86 +39,77 @@ const MarketPlace = (props) => {
       );
     return () => unsubscribe();
   }, [user, props.history]);
+
   return isLoading ? (
     <div className="spinner">
       <img src={spinner} alt="loading-spinner" />
     </div>
   ) : (
-    <div className="row">
-      <div className="col s12 m3 left-panel">
-        {/* <h4>Manage Books</h4>
-        <Link
-          to="/add/book"
-          className="waves-effect waves-light btn green darken-3 hoverable"
-          style={{ margin: "10px 0px" }}
-        >
-          ADD BOOK <i className="material-icons right">add</i>
-        </Link> */}
-
-        <div className="input-field">
-          <input
-            id="title"
-            type="text"
-            className="validate"
-            value={searchTitle}
-            onChange={(e) => setSearchTitle(e.target.value)}
-          />
-          <label htmlFor="title">Search by title</label>
-        </div>
-
-        <div className="input-field">
-          <input
-            id="author"
-            type="text"
-            className="validate"
-            value={searchAuthor}
-            onChange={(e) => setSearchAuthor(e.target.value)}
-          />
-          <label htmlFor="author">Search by author</label>
-        </div>
-      </div>
-      <div className="col s12 m9 right-panel">
+    <div>
+      <Box sx={{ marginBottom: 2 }}>
+        <TextField
+          label="Search by title"
+          value={searchTitle}
+          onChange={(e) => setSearchTitle(e.target.value)}
+          variant="outlined"
+          fullWidth
+        />
+      </Box>
+      <Box sx={{ marginBottom: 2 }}>
+        <TextField
+          label="Search by author"
+          value={searchAuthor}
+          onChange={(e) => setSearchAuthor(e.target.value)}
+          variant="outlined"
+          fullWidth
+        />
+      </Box>
+      <Grid container spacing={2}>
         {books.length > 0 ? (
-          <div className="row" style={{ padding: "16px" }}>
-            {books
-              .filter((book) =>
-                book.title.toLowerCase().includes(searchTitle.toLowerCase())
-              )
-              .filter((book) =>
-                book.author.toLowerCase().includes(searchAuthor.toLowerCase())
-              )
-              .map((book) => (
-                <div className="col s12 m4" key={book.id}>
-                  <div className="card grey lighten-5 z-depth-1 hoverable">
-                    <div className="card-image">
-                      <img
-                        src={book.imageURL}
-                        style={{ height: "250px" }}
-                        alt={book.author}
-                      />
-                      <h6>Name : {book.title}</h6>
-                      <h6>Price : {book.price} Rs</h6>
-
-                      <h6>Description : {book.description}</h6>
-                    </div>
-
-                    <div className="card-action center">
-                      <Link
-                        to={`/book/${book.id}?fromMarketplace=true`}
-                        className="btn grey darken-1 hoverable"
-                      >
-                        View Details{" "}
-                        <i className="material-icons right">arrow_forward</i>
-                      </Link>
-                    </div>
+          books
+            .filter((book) =>
+              book.title.toLowerCase().includes(searchTitle.toLowerCase())
+            )
+            .filter((book) =>
+              book.author.toLowerCase().includes(searchAuthor.toLowerCase())
+            )
+            .map((book) => (
+              <Grid item xs={12} sm={6} md={4} key={book.id}>
+                <Card>
+                  <CardMedia
+                    component="img"
+                    height="250"
+                    image={book.imageURL}
+                    alt={book.author}
+                  />
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      Name: {book.title}
+                    </Typography>
+                    <Typography variant="body1">
+                      Price: {book.price} Rs
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      Description: {book.description}
+                    </Typography>
+                  </CardContent>
+                  <div style={{ textAlign: "center", marginBottom: "16px" }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      component={Link}
+                      to={`/book/${book.id}?fromMarketplace=true`}
+                    >
+                      View Details <i className="material-icons right">arrow_forward</i>
+                    </Button>
                   </div>
-                </div>
-              ))}
-          </div>
+                </Card>
+              </Grid>
+            ))
         ) : (
-          <h3>No books available</h3>
+          <Typography variant="h3">No books available</Typography>
         )}
-      </div>
+      </Grid>
     </div>
   );
 };
